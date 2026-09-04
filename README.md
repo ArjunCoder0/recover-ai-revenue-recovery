@@ -53,7 +53,7 @@ Subscription billing systems and payment gateways in India (handling UPI Autopay
 
 RECOVER replaces blind retries with a clinical, policy-fenced AI controller:
 - **Rules build the fence:** A pure, deterministic policy engine evaluates 8 compliance, regulatory, and merchant rules before the AI is even consulted.
-- **AI chooses within the fence:** An online Beta-Thompson Sampling bandit evaluates only legal actions and selects the action with the highest **Net Expected Value ($EV = p \cdot \text{amount} - \text{cost}$)**.
+- **AI chooses within the fence:** An online Beta-Thompson Sampling bandit evaluates only legal actions and selects the action with the highest **Net Expected Value** ($EV = p \cdot \text{amount} - \text{cost}$).
 - **Every decision is explainable:** Every case records the exact reason alternative arms were blocked and why the winning action was chosen.
 - **Online Bayesian learning:** The AI learns from observed payment outcomes in real time, steering future cases toward higher recovery.
 - **Human-in-the-Loop safety net:** High-value cases where automated attempts cease are escalated to human operators with one-click payment link dispatch.
@@ -94,13 +94,14 @@ ONLINE LEARNING (α, β posterior updates) + APPEND-ONLY AUDIT TRAIL
 
 ## 6. Mathematical Formulation: Thompson Sampling Bandit
 
-For each failure class $c \in \{\text{SOFT}, \text{TRANSIENT}, \text{ACTION\_REQUIRED}, \text{HARD}\}$ and action arm $a \in \text{ARMS}$, the AI maintains a conjugate Beta prior over the true recovery probability $\theta_{c, a}$:
+For each failure class $c \in$ {`SOFT`, `TRANSIENT`, `ACTION_REQUIRED`, `HARD`} and action arm $a \in \mathcal{A}$, the AI maintains a conjugate Beta prior over the true recovery probability $\theta_{c, a}$:
 
 $$\theta_{c, a} \sim \text{Beta}(\alpha_{c, a}, \beta_{c, a})$$
 
 ### Decision Step (Exploration vs Exploitation)
 When a case of class $c$ with amount $A$ is evaluated:
-1. Filter legal actions: $\mathcal{A}_{\text{allowed}} = \{a \in \text{ARMS} \mid \text{policy\_allowed}(a) = \text{True}\}$.
+1. Filter legal actions permitted by the policy safety fence:
+   $$\mathcal{A}_{\text{allowed}} = \{a \in \mathcal{A} \mid \text{allowed}(a) = \text{true}\}$$
 2. For each legal arm $a \in \mathcal{A}_{\text{allowed}}$:
    - Sample $p_a \sim \text{Beta}(\alpha_{c, a}, \beta_{c, a})$.
    - Compute Net Expected Value: $\text{EV}_a = p_a \cdot A - \text{Cost}(a)$.
@@ -169,7 +170,7 @@ Posterior uncertainty (standard deviation): $\sigma = \sqrt{\frac{\alpha \beta}{
 
 ## 10. Human-in-the-Loop (HITL)
 
-High-value customer relationships (e.g. amounts $\ge$ ₹2,500) are protected from premature automated abandonment:
+High-value customer relationships (e.g. amounts ≥ ₹2,500) are protected from premature automated abandonment:
 - **AI recommends:** Displays the case details, decline diagnosis, recovery probability, expected value, and the recommended 1-tap Payment Link.
 - **Human operator actions:**
   - **APPROVE (Send Payment Link):** Dispatches the link immediately and updates case history and audit log.
