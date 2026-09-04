@@ -27,6 +27,11 @@ CODES = {
 WEIGHTS = [0.34, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05, 0.06, 0.06, 0.06]
 
 
+def classify_decline(code: str) -> str:
+    """Maps a gateway or issuer decline code to one of 4 clinical failure classes."""
+    return CODES.get(code, "SOFT")
+
+
 @dataclass
 class Case:
     """Represents a failed payment case.
