@@ -13,7 +13,7 @@
 
 ---
 
-## 1. Executive Summary & One-Line Pitch
+## 1. Executive Summary
 
 **RECOVER** is a policy-bounded AI controller that turns failed recurring payments into recovered revenue by pairing a **deterministic compliance policy engine** with an **online Beta-Thompson Sampling bandit** that maximizes Net Expected Value while guaranteeing zero regulatory or network violations.
 
@@ -224,21 +224,7 @@ Open `http://localhost:8501` in your browser.
 
 ---
 
-## 14. 3-Minute Hackathon Demo Script
-
-| Time | Screen | Demo Narration & Action |
-|:---:|:---:|---|
-| **0:00** | **Overview** | "Welcome to RECOVER. Everything runs locally on standard Python with zero API keys required. We process 400 realistic payment failures. Point to the KPI row: RECOVER achieves **79.5% recovery** vs 43.5% naive, delivering **₹239,375 net lift** with **zero policy violations**." |
-| **0:45** | **Benchmark Charts** | "Look at the unit economics: naive schedules waste 900+ attempts retrying hard declines. RECOVER cuts retries by 53%, recovering transient outages rapidly and waiting for salary day on insufficient funds." |
-| **1:10** | **Case Explorer** | "Click chip **⚡ Hard Decline (R1)**. In the card **'WHY DID AI CHOOSE THIS ACTION?'**, all retries are blocked by Rule R1. The Thompson Sampling bandit was only permitted to send a Payment Link. Real-time probabilities, EV, and Bayesian observations are displayed." |
-| **1:40** | **UPI Autopay Chip** | "Click **⚡ UPI Autopay Pre-debit (R2)**. `RETRY_2H` is blocked by NPCI's 24h pre-debit notice rule. The AI selects `RETRY_SALARY_DAY` with the highest net EV." |
-| **2:05** | **Decision Intelligence** | "In Decision Intelligence, look at the Before vs After learning charts. The bandit observed recovery outcomes online: retries on `ACTION_REQUIRED` collapsed toward 2%, while `RETRY_SALARY_DAY` on `SOFT` rose." |
-| **2:25** | **Human Review** | "High-value cases (₹2,500+) are routed to Human Review. The AI recommends a payment link; the operator can click **APPROVE** or **REJECT**. Everything updates the audit log." |
-| **2:45** | **Policy & Experiment** | "In Policy & Safety, see our 8 active rules. In Experiment, our 10-seed check proves a consistent +35.8 pp lift across independent cohorts. In Razorpay Mapping, see how this plugs directly into Razorpay webhooks." |
-
----
-
-## 15. Repository Structure
+## 14. Repository Structure
 
 ```
 c:\My_Projects\Razorpay_Buildthon\
@@ -271,7 +257,7 @@ c:\My_Projects\Razorpay_Buildthon\
 
 ---
 
-## 16. Known Limitations & Scientific Honesty
+## 15. Known Limitations & Scientific Honesty
 
 1. **Simulation Fidelity:** All payment outcomes are generated via parameterized synthetic response curves (`hidden_recovery_prob`). While modeled after Indian payment patterns, they are not calibrated to proprietary production bank data.
 2. **Class-Level Bandit:** The Thompson Sampling bandit models beliefs per `(failure_class, arm)`. In production, contextual bandits would incorporate customer LTV, issuing bank, card bin, and historical debit hours.
