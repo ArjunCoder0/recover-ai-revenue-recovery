@@ -11,4 +11,9 @@ __pycache__/
 Thumbs.db
 *.db
 *.sqlite3
-
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.env*.local
+*.local

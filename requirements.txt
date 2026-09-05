@@ -1,4 +1,7 @@
-streamlit>=1.32
+fastapi>=0.115
+uvicorn>=0.20
+pydantic>=2.0
+httpx>=0.24
 pandas>=2.0
 pytest>=7
 # Optional: for AI message rewriting; core app works 100% without any API key
