@@ -62,7 +62,7 @@ Traditional recovery tools use static cron schedules (e.g., *"retry every 24 hou
 
 Instead of blindly retrying every failure, RECOVER executes a disciplined, multi-stage pipeline:
 
-$$\text{Failure} \longrightarrow \text{Diagnosis} \longrightarrow \text{Policy Check} \longrightarrow \text{AI Decision} \longrightarrow \text{Execution} \longrightarrow \text{Outcome} \longrightarrow \text{Learning / Audit}$$
+**Failure** &nbsp;→&nbsp; **Diagnosis** &nbsp;→&nbsp; **Policy Check** &nbsp;→&nbsp; **AI Decision** &nbsp;→&nbsp; **Execution** &nbsp;→&nbsp; **Outcome** &nbsp;→&nbsp; **Learning / Audit**
 
 ```
                 ┌─────────────────────────────────────────────────────────┐
@@ -296,7 +296,7 @@ Once the Policy Safety Fence identifies the allowed action set $\mathcal{A}_{\te
 ### Mathematical Formulation
 
 #### 1. Conjugate Beta Prior
-For each failure class $c \in \{\text{SOFT}, \text{TRANSIENT}, \text{ACTION\_REQUIRED}, \text{HARD}\}$ and candidate arm $a \in \mathcal{A}$, the model maintains a conjugate Beta prior over the unknown conversion probability $\theta_{c, a}$:
+For each failure class $c \in$ {`SOFT`, `TRANSIENT`, `ACTION_REQUIRED`, `HARD`} and candidate arm $a \in \mathcal{A}$, the model maintains a conjugate Beta prior over the unknown conversion probability $\theta_{c, a}$:
 
 $$\theta_{c, a} \sim \text{Beta}(\alpha_{c, a}, \beta_{c, a})$$
 
@@ -330,16 +330,16 @@ $$\text{EV}_a = p_a \cdot A - \text{Cost}(a)$$
 
 The engine selects:
 
-$$a^* = \arg\max_{a \in \mathcal{A}_{\text{allowed}}} \text{EV}_a \quad \text{subject to } \text{EV}_{a^*} > 0$$
+$$a^{\ast} = \arg\max_{a \in \mathcal{A}_{\text{allowed}}} \text{EV}_a \quad (\text{subject to } \text{EV}_{a^{\ast}} > 0)$$
 
 If no legal action yields a positive Expected Net Value, the case is safely routed to `ESCALATE` (if eligible under R8) or terminated with `STOP` to protect merchant resources.
 
 #### 4. Bayesian Online Learning
 When the Mock Razorpay payment outcome $y \in \{0, 1\}$ is observed, the posterior belief is immediately updated:
 
-$$\alpha_{c, a^*} \longleftarrow \alpha_{c, a^*} + y$$
+$$\alpha_{c, a^{\ast}} \leftarrow \alpha_{c, a^{\ast}} + y$$
 
-$$\beta_{c, a^*} \longleftarrow \beta_{c, a^*} + (1 - y)$$
+$$\beta_{c, a^{\ast}} \leftarrow \beta_{c, a^{\ast}} + (1 - y)$$
 
 * **Posterior Mean:** $\mathbb{E}[\theta] = \frac{\alpha}{\alpha + \beta}$
 * **Uncertainty (Standard Deviation):** $\sigma = \sqrt{\frac{\alpha \beta}{(\alpha + \beta)^2 (\alpha + \beta + 1)}}$
@@ -830,7 +830,7 @@ During the engineering of RECOVER, several non-trivial architectural challenges 
 
 ### 3. UPI Autopay 24-Hour Notice Enforcement
 * **What Broke:** Initial retry logic treated UPI Autopay like cards, scheduling immediate 2-hour retries on transient errors. In India, NPCI mandate rules require a 24-hour pre-debit customer notification before re-presentment.
-* **How We Recovered:** We codified **Rule R2** in `recover/policy.py`. When `method == "upi_autopay"`, any retry arm with delay $< 24\text{ hours}$ is deterministically marked `allowed=False`, forcing the bandit to choose valid longer delays (`RETRY_24H`, `RETRY_SALARY_DAY`) or pivot to direct payment links.
+* **How We Recovered:** We codified **Rule R2** in `recover/policy.py`. When `method == "upi_autopay"`, any retry arm with delay < 24 hours is deterministically marked `allowed=False`, forcing the bandit to choose valid longer delays (`RETRY_24H`, `RETRY_SALARY_DAY`) or pivot to direct payment links.
 
 ### 4. Transition from Streamlit to Full-Stack Architecture
 * **What Broke:** While Streamlit (`app.py`) provided rapid prototyping, its single-threaded execution model re-ran the entire script on every user interaction, making it difficult to simulate asynchronous webhook delivery and real-time idempotency blast tests.
